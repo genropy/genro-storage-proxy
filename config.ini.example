@@ -1,0 +1,52 @@
+# genro-storage-proxy configuration file
+
+[server]
+# Server configuration
+host = 0.0.0.0
+port = 8080
+
+# API token for authentication (required for admin endpoints)
+# Generate a secure token and keep it secret
+api_token = your-secret-token-here
+
+[storage]
+# SQLite database path for storing volume configurations
+# Use a persistent location in production
+db_path = /tmp/storage_proxy.db
+
+[volumes]
+# Storage volume definitions
+# Format: volume.<name>.<field> = <value>
+#
+# Required fields:
+#   - backend: Type of storage backend (s3, gcs, local, http, webdav, etc.)
+#   - config: JSON object with backend-specific configuration
+#
+# Examples:
+
+# Local filesystem storage
+volume.local_uploads.backend = local
+volume.local_uploads.config = {"path": "/data/uploads"}
+
+# Amazon S3 storage
+volume.s3_documents.backend = s3
+volume.s3_documents.config = {"bucket": "my-documents", "region": "us-east-1"}
+
+# Google Cloud Storage
+volume.gcs_backups.backend = gcs
+volume.gcs_backups.config = {"bucket": "my-backups", "project": "my-project"}
+
+# HTTP/HTTPS backend (read-only)
+volume.cdn_assets.backend = http
+volume.cdn_assets.config = {"base_url": "https://cdn.example.com/assets"}
+
+# WebDAV storage
+volume.webdav_share.backend = webdav
+volume.webdav_share.config = {"url": "https://webdav.example.com/share", "username": "user", "password": "pass"}
+
+# Multiple S3 buckets with different configurations
+volume.s3_public.backend = s3
+volume.s3_public.config = {"bucket": "public-files", "region": "eu-west-1"}
+
+volume.s3_private.backend = s3
+volume.s3_private.config = {"bucket": "private-data", "region": "us-west-2", "endpoint_url": "https://s3-custom.example.com"}

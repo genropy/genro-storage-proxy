@@ -31,7 +31,8 @@ dependencies = [
     "uvicorn>=0.24.0",
     "genro-storage>=0.4.0",
     "pydantic>=2.5.0",
-    "python-multipart>=0.0.6",
+    "aiosqlite>=0.19.0",
+    "nicegui>=1.4.0",
 ]
 
 [project.optional-dependencies]
@@ -49,6 +50,9 @@ dev = [
 Homepage = "https://github.com/genropy/genro-storage-proxy"
 Repository = "https://github.com/genropy/genro-storage-proxy"
 "Bug Tracker" = "https://github.com/genropy/genro-storage-proxy/issues"
+
+[project.scripts]
+genro-storage-proxy = "genro_storage_proxy.main:main"
 
 [tool.setuptools]
 packages = ["genro_storage_proxy"]
