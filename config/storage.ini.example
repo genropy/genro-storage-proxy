@@ -1,0 +1,75 @@
+# genro-storage-proxy Configuration Example
+# Copy this file to storage.ini and customize
+
+[server]
+host = 0.0.0.0
+port = 8080
+workers = 4
+log_level = info
+
+[auth]
+# Authentication type: jwt or apikey
+type = jwt
+
+# JWT settings
+jwt_secret = ${JWT_SECRET}
+jwt_algorithm = HS256
+jwt_expiration = 3600
+
+# API key settings (alternative to JWT)
+# type = apikey
+# api_keys = ${API_KEYS}  # Comma-separated list
+
+[admin]
+# Enable admin API for mount management
+enabled = true
+admin_token = ${ADMIN_TOKEN}
+
+[rate_limit]
+enabled = true
+requests_per_minute = 100
+# Per-user or per-IP
+strategy = user
+
+# Static mount configurations
+# These are loaded at startup
+
+[mount:uploads]
+type = s3
+bucket = company-uploads
+region = eu-west-1
+# Optional: prefix for all paths in this mount
+# prefix = uploads/
+
+[mount:backups]
+type = local
+path = /data/backups
+
+[mount:public]
+type = s3
+bucket = public-assets
+region = us-east-1
+anon = true  # Public read access, no auth required
+
+[mount:memory]
+type = memory
+# Useful for testing
+
+# Example: GCS mount
+# [mount:gcs_backups]
+# type = gcs
+# bucket = my-gcs-bucket
+# project = my-project-id
+# token = /path/to/service-account.json
+
+# Example: Azure mount
+# [mount:azure_docs]
+# type = azure
+# container = documents
+# account_name = myaccount
+# account_key = ${AZURE_ACCOUNT_KEY}
+
+# Example: HTTP mount (read-only)
+# [mount:cdn]
+# type = http
+# base_url = https://cdn.example.com
