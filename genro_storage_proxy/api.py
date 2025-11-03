@@ -1,3 +1,18 @@
+# Copyright (c) 2025 Softwell Srl, Milano, Italy
+# SPDX-License-Identifier: Apache-2.0
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """FastAPI application for genro-storage-proxy.
 
 Provides administrative endpoints for managing storage volumes.
@@ -13,6 +28,11 @@ from pydantic import BaseModel, Field
 from genro_storage_proxy.persistence import Persistence
 from genro_storage_proxy.config_loader import load_volumes_from_config
 from genro_storage_proxy.logger import get_logger
+from genro_storage_proxy.backend_schemas import (
+    get_backend_info,
+    get_all_backends,
+    get_backends_summary
+)
 from genro_storage import StorageManager
 
 logger = get_logger("API")
@@ -332,10 +352,13 @@ async def browse_volume(volume_name: str, path: str = ""):
                         "label": child_node.basename,  # Use node's basename property
                         "icon": "folder" if child_node.isdir else "description",
                     }
-                    # For directories, add lazy loading support
+                    # For directories, add children count
                     if child_node.isdir:
-                        item["lazy"] = True
-                        item["children"] = []  # Empty children array signals lazy loading
+                        try:
+                            children_list = list(child_node.children())
+                            item["children_count"] = len(children_list)
+                        except Exception:
+                            item["children_count"] = 0
                     items.append(item)
         except Exception as e:
             logger.error(f"Error listing path '{full_path}' in volume '{volume_name}': {e}")
